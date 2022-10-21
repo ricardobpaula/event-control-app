@@ -34,6 +34,7 @@ export const Login = () => {
                     value={name}
                     onChangeText={text => setName(text)}
                     error={error}
+                    autoCorrect={false}
                 />
                 <Button title='Entrar' onPress={handleSubmit}/>
             </Content>
