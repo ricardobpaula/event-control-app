@@ -34,13 +34,14 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
         loadStorage()
     },[])
 
-    async function login ({ user }: LoginProps):Promise<void> {
-        await setAuthStorage({ user })
-        setUser(user)
+    async function login (props: LoginProps):Promise<void> {
+        await setAuthStorage({ user: props.user })
+        setUser(props.user)
     }
 
     async function logout ():Promise<void> {
         await AsyncStorage.clear()
+        setUser(undefined)
     }
 
     return (
