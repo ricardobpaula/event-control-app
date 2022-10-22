@@ -11,6 +11,6 @@ const paddingTop = StatusBar.currentHeight ? StatusBar.currentHeight : 20
 
 export const SafeAreaView = styled(RNSafeAreaView)`
     flex: 1;
-    padding-top: ${Platform.OS === 'android' ? paddingTop : 0};
+    padding-top: ${Platform.OS === 'android' ? paddingTop : 0}px;
     background-color: ${colors.gray[500]};
 `

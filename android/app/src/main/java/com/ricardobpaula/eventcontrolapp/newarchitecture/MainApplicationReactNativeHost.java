@@ -1,4 +1,4 @@
-package com.eventcontrolapp.newarchitecture;
+package com.ricardobpaula.eventcontrolapp.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.eventcontrolapp.BuildConfig;
-import com.eventcontrolapp.newarchitecture.components.MainComponentsRegistry;
-import com.eventcontrolapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.ricardobpaula.eventcontrolapp.BuildConfig;
+import com.ricardobpaula.eventcontrolapp.newarchitecture.components.MainComponentsRegistry;
+import com.ricardobpaula.eventcontrolapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

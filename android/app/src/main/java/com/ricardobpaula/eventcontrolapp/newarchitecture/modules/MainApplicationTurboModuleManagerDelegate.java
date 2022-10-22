@@ -1,4 +1,4 @@
-package com.eventcontrolapp.newarchitecture.modules;
+package com.ricardobpaula.eventcontrolapp.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

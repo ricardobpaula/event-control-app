@@ -1,10 +1,16 @@
 {
   "expo": {
-    "name": "event-control-app",
+    "name": "Event Control",
     "slug": "event-control-app",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.ricardobpaula.eventcontrolapp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.ricardobpaula.eventcontrolapp"
+    }
   }
 }

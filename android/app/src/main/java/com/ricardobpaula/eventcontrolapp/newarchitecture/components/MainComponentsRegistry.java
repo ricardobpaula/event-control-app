@@ -1,4 +1,4 @@
-package com.eventcontrolapp.newarchitecture.components;
+package com.ricardobpaula.eventcontrolapp.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

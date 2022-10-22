@@ -1,4 +1,4 @@
-package com.eventcontrolapp;
+package com.ricardobpaula.eventcontrolapp;
 
 import android.os.Build;
 import android.os.Bundle;
