@@ -4,9 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import { Feather } from '@expo/vector-icons'
 
-import { Home } from '../screens/home/home'
 import { colors } from '../styles/theme'
 import { Settings } from '../screens/settings/settings'
+import { HomeStack } from './home.routes'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
@@ -21,8 +21,8 @@ export const AppRoutes:React.FC = () => {
         }}
        >
         <Screen
-            name='Home'
-            component={Home}
+            name='HomeStack'
+            component={HomeStack}
             options={{
                 tabBarIcon: () => 
                     <Feather 

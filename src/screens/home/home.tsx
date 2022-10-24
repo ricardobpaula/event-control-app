@@ -1,17 +1,29 @@
 import React, { useState } from "react"
 
-import { MarkedDates }  from 'react-native-calendars/src/types'
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+
+import { MarkedDates, DateData }  from 'react-native-calendars/src/types'
 
 import { useAuth } from "../../hooks/useAuth"
 
 import { Calendar, Content, Title } from './styles'
 import { SafeAreaView } from "../../styles/global"
 import { colors } from "../../styles/theme"
+import { useNavigation } from "@react-navigation/native"
+
+type HomeScreenProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>
 
 export const Home = () => {
     const [markedDates, setMarkedDates] = useState<MarkedDates>()
     const { user } = useAuth()
-    
+    const navigation = useNavigation<HomeScreenProp>()
+
+    const handleOpenDay = (timestamp:number) => {
+        navigation.navigate('EventList', {
+            date: JSON.stringify(new Date(timestamp)) 
+        })
+    }
+
     const hour = new Date().getHours()
     let salute = ''
 
@@ -36,6 +48,7 @@ export const Home = () => {
                     markingType='period'
                     pastScrollRange={12}
                     futureScrollRange={12}
+                    onDayPress={value => handleOpenDay(value.timestamp)}
                     theme={{
                         calendarBackground: colors.gray[500],
                         textSectionTitleColor: colors.gray[100],
