@@ -8,6 +8,8 @@ export declare global {
         date: Date
         name: string
         frequency?: number
+        createdAt?: Date
+        updatedAt?: Date
     }
 
     type HomeStackParamList = {

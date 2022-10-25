@@ -10,6 +10,8 @@ import { Alert, FlatList } from 'react-native'
 import { IconButton } from '../../components/icon-button/icon-button'
 import { colors } from '../../styles/theme'
 import { RouteProp, useRoute } from '@react-navigation/native'
+import { getRealm } from '../../database/realm'
+import { EventRepository } from '../../database/repositories/event-repository'
 
 type EventListRouteProp = RouteProp<HomeStackParamList, 'EventList'>
 
@@ -33,30 +35,48 @@ export const EventList:React.FC = () => {
             'Remover marcação',
             `Tem certeza que deseja remover ${event.name}?`,
             [
-                {text: 'Sim', onPress: () => console.log('Yes'), style: 'destructive'},
+                {text: 'Sim', onPress: () => deleteEvent(event.id), style: 'destructive'},
                 {text: 'Não', style: 'cancel'},
             ],
             {cancelable: true}
         )
     }
 
+    const deleteEvent = async (id: string) => {
+        const realm = await EventRepository.start()
+        try {
+            realm.delete(id)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            realm.close()
+            loadEvents()
+        }
+    }
+
+    const loadEvents = async () => {
+        const realm = await getRealm()
+
+        try {
+            const data = realm.objects('Event').toJSON()
+            const events = data.map<EventEntity>(item => {
+                return {
+                    id: item._id,
+                    name: item.name,
+                    date: item.date,
+                    frequency: item.frequency
+                }
+            })
+            setEvents(events)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            realm.close()
+        }
+    }
     useEffect(() => {
-        const newEvents = [{
-                id: 'fake-id-1',
-                date: new Date(),
-                name: 'Evento 1'
-            },
-            {
-                id: 'fake-id-2',
-                date: new Date(),
-                name: 'Evento 2'
-            },
-            {
-                id: 'fake-id-3',
-                date: new Date(),
-                name: 'Evento 3'
-            }]
-        setEvents(newEvents)
+        loadEvents()
+        
     },[])
 
     return (
@@ -88,7 +108,7 @@ export const EventList:React.FC = () => {
                 />
                 <Button title='Nova marcação' onPress={handleNewEvent}/>
                 <EventForm
-                    onHandleSubmit={() => console.log('submit')}
+                    onHandleSubmit={loadEvents}
                     ref={modalRef}
                     date={date}
                 />

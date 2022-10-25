@@ -1,15 +1,28 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
-import { Alert, Animated, KeyboardAvoidingView, Modal, ModalProps, Platform } from 'react-native'
-import { Button } from '../button/button'
-import { CheckBox } from '../checkbox/checkbox'
-import { Input } from '../input/input'
-import { NumberSelector } from '../number-selector/number-selector'
+import React, { 
+    forwardRef, 
+    useImperativeHandle,
+    useState 
+} from 'react'
+
+import { 
+    Animated,
+    KeyboardAvoidingView,
+    Modal,
+    ModalProps,
+    Platform
+} from 'react-native'
+
 import { 
     Container,
     DismissArea,
     Form,
     Title
 } from './styles'
+
+import { Button } from '../button/button'
+import { Input } from '../input/input'
+import { NumberSelector } from '../number-selector/number-selector'
+import { EventRepository } from '../../database/repositories/event-repository'
 
 export interface EventFormHandles {
     openModal: (event?: EventEntity) => void
@@ -26,12 +39,31 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
     
     const [visible, setVisible] = useState<boolean>(false)
     const [id, setId] = useState<string>()
-    const [description, setDescription] = useState<string>()
+    const [name, setName] = useState<string>()
     const [frequency, setFrequency] = useState<number>(0)
 
     const handleSubmit = async () => {
-        console.log('submit')
-        setVisible(false)
+        const realm = await EventRepository.start()
+
+        const event = {
+            id,
+            date,
+            name,
+            frequency
+        } as EventEntity
+
+        try {
+            event.id ? realm.update(event) : realm.create(event)
+        } catch (error) {
+            console.log(error)
+        }finally {
+            realm.close()
+            setName('')
+            setFrequency(0)
+            setId(undefined)
+            setVisible(false)
+            onHandleSubmit()
+        }
     }
 
     const onOpenAnimate = Animated.timing(animatedHeight, {
@@ -49,7 +81,7 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
     const openModal = (event?: EventEntity) => {
         if (event) {
             setId(event.id)
-            setDescription(event.name)
+            setName(event.name)
             setFrequency(event.frequency || 0)
         }
         setVisible(true)
@@ -86,8 +118,8 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
                     <Form>
                     <Input 
                             label='Descrição'
-                            value={description}
-                            onChangeText={(value) => setDescription(value)}
+                            value={name}
+                            onChangeText={(value) => setName(value)}
                         />
                         <NumberSelector
                             title='Frequência'

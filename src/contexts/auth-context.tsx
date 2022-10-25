@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getAuthStorage, setAuthStorage } from '../utils/storage'
+import { getRealm } from '../database/realm'
 
 interface LoginProps {
     user: User
@@ -41,6 +42,8 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
 
     async function logout ():Promise<void> {
         await AsyncStorage.clear()
+        const realm = await getRealm()
+        realm.deleteAll()
         setUser(undefined)
     }
 
