@@ -18,14 +18,33 @@ export class EventRepository {
         this.realm.close()
     }
 
+    findMany (query: string, ...args: any[]): EventEntity[] {
+        const data = this.realm.objects('Event')
+                        .filtered(query,...args)
+                        .toJSON()
+        const events = data.map<EventEntity>(item => {
+            return {
+                id: item._id,
+                name: item.name,
+                date: item.date,
+                frequency: item.frequency,
+                done: item.done,
+                createdAt: item.created_at,
+                updatedAt: item.updated_at
+            }
+        })
+
+        return events
+    }
     create ({
         date, name, frequency }: EventEntity) {
-        this.realm.write(() => {
-            this.realm.create('Event', {
+        return this.realm.write(() => {
+            return this.realm.create('Event', {
                 _id: uuid.v4(),
                 date,
                 name,
                 frequency,
+                done: false,
                 created_at: new Date(),
                 updated_at: new Date()
             })
@@ -33,13 +52,14 @@ export class EventRepository {
     }
 
     update ({
-        id, date, name, frequency, createdAt }: EventEntity) {
-        this.realm.write(() => {
-            this.realm.create('Event', {
+        id, date, name, frequency, done, createdAt }: EventEntity) {
+        return this.realm.write(() => {
+            return this.realm.create('Event', {
                 _id: id,
                 date,
                 name,
                 frequency,
+                done,
                 created_at: createdAt,
                 updated_at: new Date()
             },UpdateMode.Modified)

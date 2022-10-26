@@ -7,6 +7,7 @@ export declare global {
         id: string
         date: Date
         name: string
+        done: booelan
         frequency?: number
         createdAt?: Date
         updatedAt?: Date

@@ -41,10 +41,16 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
     }
 
     async function logout ():Promise<void> {
-        await AsyncStorage.clear()
         const realm = await getRealm()
-        realm.deleteAll()
-        setUser(undefined)
+        try {
+            realm.deleteAll()
+        } catch (error) {
+            
+        } finally {
+            await AsyncStorage.clear()
+            setUser(undefined)
+            realm.close()
+        }
     }
 
     return (

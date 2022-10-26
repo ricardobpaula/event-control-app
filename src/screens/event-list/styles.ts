@@ -32,11 +32,22 @@ export const Event = styled(View)`
 `
 
 export const EventName = styled(Text)`
-    font-size: 16px;
+    flex: 1;
+    font-size: 14px;
     color: ${colors.pink[700]};
+    margin: 0px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
 `
 
-export const ButtonContainer = styled(View)`
+export const LeftContent = styled(View)`
+    flex: 1;    
+    flex-direction: row;
+    align-items: center;
+`
+
+export const RightContent = styled(View)`
     flex-direction: row;
     align-items: center;
 `

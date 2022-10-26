@@ -4,6 +4,7 @@ export const EventSchema = {
         _id: 'string',
         date: 'date',
         name: 'string',
+        done: 'bool',
         frequency: 'int',
         created_at: 'date',
         updated_at: 'date'

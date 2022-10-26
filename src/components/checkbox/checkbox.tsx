@@ -11,11 +11,12 @@ import { colors } from '../../styles/theme'
 
 type CheckBoxProps = TouchableOpacityProps & {
     value: boolean
+    size: number
     onChangeValue: (value: boolean) => void
 }
 
 export const CheckBox:React.FC<CheckBoxProps> = (
-    {value, onChangeValue, ...rest}) => {
+    {value, size, onChangeValue, ...rest}) => {
     const [checked, setChecked] = useState<boolean>(value)
     
     const onSetValue = () => {
@@ -29,11 +30,12 @@ export const CheckBox:React.FC<CheckBoxProps> = (
             {...rest}    
             activeOpacity={0.7}
             onPress={onSetValue}
+            size={size}
         >
             {checked &&
                 <MaterialIcons
                     name='check'
-                    size={30}
+                    size={size / 2}
                     color={colors.pink[700]}
                 />
             }
