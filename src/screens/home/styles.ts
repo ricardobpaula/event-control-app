@@ -5,6 +5,7 @@ import {
 import { CalendarList } from 'react-native-calendars'
 
 import styled from 'styled-components'
+import { IconButton } from '../../components/icon-button/icon-button'
 import { colors } from '../../styles/theme'
 
 export const Container = styled(View)`
@@ -16,6 +17,12 @@ export const Content = styled(View)`
     padding: 20px 20px;
     justify-content: center;
     align-items: center;
+`
+
+export const Header = styled(View)`
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
 `
 
 export const Title = styled(Text)`

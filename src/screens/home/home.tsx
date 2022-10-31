@@ -2,31 +2,38 @@ import React, { useEffect, useState } from "react"
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
-import { MarkedDates, DateData }  from 'react-native-calendars/src/types'
+import { MarkedDates }  from 'react-native-calendars/src/types'
 
 import { useAuth } from "../../hooks/useAuth"
 
-import { Calendar, Content, Title } from './styles'
+import { Calendar, Content, Header, Title } from './styles'
 import { SafeAreaView } from "../../styles/global"
 import { colors } from "../../styles/theme"
 import { useNavigation } from "@react-navigation/native"
 import { Loading } from "../../components/loading/loading"
 import { EventRepository } from "../../database/repositories/event-repository"
+import { IconButton } from "../../components/icon-button/icon-button"
 
 type HomeScreenProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>
 
 export const Home = () => {
     const [loading, setLoading] = useState<boolean>(true)
+    const [refreshing, setRefreshing] = useState<boolean>(false)
     const [markedDates, setMarkedDates] = useState<MarkedDates>()
     const { user } = useAuth()
     const navigation = useNavigation<HomeScreenProp>()
 
     const handleOpenDay = (timestamp:number) => {
         navigation.navigate('EventList', {
-            date: JSON.stringify(new Date(timestamp)) 
+            timestamp: timestamp
         })
     }
 
+    const refreshAllEvents = async () => {
+        setRefreshing(true)
+        loadAllEvents()
+    }
+    
     const loadAllEvents = async () => {
         const realm = await EventRepository.start() 
 
@@ -35,23 +42,23 @@ export const Home = () => {
             const dates = new Set(
                 events.map(
                         item => item.date
-                                .toLocaleDateString('pt-BR')
-                                .replaceAll('/','-')))
+                                .toISOString()
+                                .slice(0, 10)))
             
             const markedDates = {}
 
             dates.forEach(item => {
                 markedDates[item] = { marked: true }
-                console.log(markedDates[item])
             })
-            
-            setMarkedDates({markedDates})
+
+            setMarkedDates(markedDates)
             
         } catch (error) {
             console.log(error)
         } finally {
             realm.close()
             setLoading(false)
+            setRefreshing(false)
         }
 
     }
@@ -79,9 +86,19 @@ export const Home = () => {
     return (
         <SafeAreaView>
             <Content>
-                <Title>{salute} {user.name}</Title>
+                <Header>
+                    <Title>{salute} {user.name}</Title>
+                    <IconButton 
+                        icon='refresh-ccw'
+                        onPress={refreshAllEvents}
+                        disabled={refreshing}
+                        size={24}
+                        color={colors.pink[700]}
+                    />
+                </Header>
+                
                 <Calendar
-                    markedDates={{'2022-10-30': {marked: true}}}
+                    markedDates={markedDates}
                     markingType='dot'
                     pastScrollRange={6}
                     futureScrollRange={6}

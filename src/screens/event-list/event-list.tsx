@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SafeAreaView } from '../../styles/global'
 
@@ -21,14 +21,8 @@ export const EventList:React.FC = () => {
     const route = useRoute<EventListRouteProp>()
     const navigate = useNavigation<EventListStackProp>()
 
-    const date = new Date(JSON.parse(route.params.date))
-
-    navigate.setOptions({
-        title: date.toLocaleString('pt-BR', {
-            dateStyle: 'medium'
-        })
-    })
-
+    const date = new Date(route.params.timestamp)
+    
     const handleNewEvent = () => {
         modalRef.current?.openModal()
     }
@@ -92,6 +86,13 @@ export const EventList:React.FC = () => {
         }
     }
     useEffect(() => {
+        navigate.setOptions({
+            title: date.toLocaleDateString('pt-BR', {
+                dateStyle: 'medium',
+                timeZone: 'UTC'
+            })
+        })
+
         loadEvents()
         
     },[])

@@ -16,7 +16,7 @@ export declare global {
     type HomeStackParamList = {
         Home: undefined
         EventList: {
-            date: string
+            timestamp: number
         }
       }
 }
