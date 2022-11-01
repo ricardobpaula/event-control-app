@@ -1,8 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
+
+import { startOfDay, endOfDay } from 'date-fns'
 
 import { SafeAreaView } from '../../styles/global'
 
-import { Content, EmptyText, Event, EventName, LeftContent, RightContent } from './styles'
+import { 
+    Content,
+    EmptyText,
+    Event,
+    EventName,
+    LeftContent,
+    RightContent 
+} from './styles'
 
 import EventForm, { EventFormHandles } from '../../components/event-form/event-form'
 import { Button } from '../../components/button/button'
@@ -24,7 +33,7 @@ export const EventList:React.FC = () => {
     const date = new Date(route.params.timestamp)
     
     const handleNewEvent = () => {
-        modalRef.current?.openModal()
+        modalRef.current?.openModal(null)
     }
 
     const handleEditEvent = (event: EventEntity) => {
@@ -75,9 +84,8 @@ export const EventList:React.FC = () => {
 
     const loadEvents = async () => {
         const realm = await EventRepository.start()
-
         try {
-            const events = realm.findMany("date = $0 && done = $1", date, false)
+            const events = realm.findMany("date >= $0 && date <= $1 && done = $2", startOfDay(date), endOfDay(date), false)
             setEvents(events)
         } catch (error) {
             console.log(error)

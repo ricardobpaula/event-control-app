@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react"
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
-import { MarkedDates }  from 'react-native-calendars/src/types'
-
 import { useAuth } from "../../hooks/useAuth"
 
 import { Calendar, Content, Header, Title } from './styles'
@@ -19,7 +17,7 @@ type HomeScreenProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>
 export const Home = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [refreshing, setRefreshing] = useState<boolean>(false)
-    const [markedDates, setMarkedDates] = useState<MarkedDates>()
+    const [markedDates, setMarkedDates] = useState<any>()
     const { user } = useAuth()
     const navigation = useNavigation<HomeScreenProp>()
 

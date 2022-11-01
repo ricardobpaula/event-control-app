@@ -5,6 +5,7 @@ import React, {
 } from 'react'
 
 import { 
+    Alert,
     Animated,
     KeyboardAvoidingView,
     Modal,
@@ -23,6 +24,8 @@ import { Button } from '../button/button'
 import { Input } from '../input/input'
 import { NumberSelector } from '../number-selector/number-selector'
 import { EventRepository } from '../../database/repositories/event-repository'
+import RNDateTimePicker from '@react-native-community/datetimepicker'
+import { colors } from '../../styles/theme'
 
 export interface EventFormHandles {
     openModal: (event?: EventEntity) => void
@@ -41,13 +44,16 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
     const [id, setId] = useState<string>()
     const [name, setName] = useState<string>()
     const [frequency, setFrequency] = useState<number>(0)
+    const [time, setTime] = useState<Date>(date)
 
     const handleSubmit = async () => {
+        if (!name.trim()) return Alert.alert('Nome do evento é obrigatório')        
+
         const realm = await EventRepository.start()
 
         const event = {
             id,
-            date,
+            date: time,
             name,
             frequency
         } as EventEntity
@@ -83,6 +89,10 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
             setId(event.id)
             setName(event.name)
             setFrequency(event.frequency || 0)
+        }else {
+            setId(undefined)
+            setName('')
+            setFrequency(0)
         }
         setVisible(true)
         onOpenAnimate.start()
@@ -125,6 +135,14 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
                             title='Frequência'
                             onChangeValue={(value) => setFrequency(value)}
                             value={frequency}
+                        />
+
+                        <RNDateTimePicker
+                            display='spinner'
+                            textColor={colors.pink[700]}
+                            mode='time'
+                            value={time}
+                            onChange={(value) => setTime(new Date(value.nativeEvent.timestamp))}
                         />
                         
                 </Form>
