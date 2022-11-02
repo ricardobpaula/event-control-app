@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getAuthStorage, setAuthStorage } from '../utils/storage'
 import { getRealm } from '../database/realm'
+import { clearAllNotifications } from '../utils/notification'
 
 interface LoginProps {
     user: User
@@ -48,6 +49,7 @@ export const AuthProvider:React.FC<AuthProviderProps> = ({children}) => {
             console.log(error)
         } finally {
             await AsyncStorage.clear()
+            await clearAllNotifications()
             setUser(undefined)
             realm.close()
         }

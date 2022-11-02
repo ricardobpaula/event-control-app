@@ -20,6 +20,8 @@ import { IconButton } from '../../components/icon-button/icon-button'
 import { colors } from '../../styles/theme'
 import { RouteProp, NavigationProp, useNavigation, useRoute } from '@react-navigation/native'
 import { EventRepository } from '../../database/repositories/event-repository'
+import { parseToGMT3 } from '../../utils/date-util'
+import { removeSchedulePushNotification } from '../../utils/notification'
 
 type EventListRouteProp = RouteProp<HomeStackParamList, 'EventList'>
 type EventListStackProp = NavigationProp<HomeStackParamList, 'EventList'>
@@ -30,8 +32,8 @@ export const EventList:React.FC = () => {
     const route = useRoute<EventListRouteProp>()
     const navigate = useNavigation<EventListStackProp>()
 
-    const date = new Date(route.params.timestamp)
-    
+    const date = parseToGMT3(new Date(route.params.timestamp))
+
     const handleNewEvent = () => {
         modalRef.current?.openModal(null)
     }
@@ -63,17 +65,18 @@ export const EventList:React.FC = () => {
             'Remover marcação',
             `Tem certeza que deseja remover ${event.name}?`,
             [
-                {text: 'Sim', onPress: () => deleteEvent(event.id), style: 'destructive'},
+                {text: 'Sim', onPress: () => deleteEvent(event), style: 'destructive'},
                 {text: 'Não', style: 'cancel'},
             ],
             {cancelable: true}
         )
     }
 
-    const deleteEvent = async (id: string) => {
+    const deleteEvent = async ({id, notification}: EventEntity) => {
         const realm = await EventRepository.start()
         try {
             realm.delete(id)
+            await removeSchedulePushNotification(notification)
         } catch (error) {
             console.log(error)
         } finally {

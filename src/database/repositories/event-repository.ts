@@ -18,6 +18,23 @@ export class EventRepository {
         this.realm.close()
     }
 
+    getById (id: string): EventEntity {
+        const {
+            _id, date, done, name, notification, frequency, created_at, updated_at
+        } = this.realm.objectForPrimaryKey('Event', id).toJSON()
+        
+        return {
+            id: _id,
+            date,
+            done,
+            name,
+            notification,
+            frequency,
+            createdAt: created_at,
+            updatedAt: updated_at
+        }
+    }
+
     findMany (query: string, ...args: any[]): EventEntity[] {
         const data = this.realm.objects('Event')
                         .filtered(query,...args)
@@ -28,6 +45,7 @@ export class EventRepository {
                 name: item.name,
                 date: item.date,
                 frequency: item.frequency,
+                notification: item.notification,
                 done: item.done,
                 createdAt: item.created_at,
                 updatedAt: item.updated_at
@@ -37,13 +55,14 @@ export class EventRepository {
         return events
     }
     create ({
-        date, name, frequency }: EventEntity) {
+        date, name, frequency, notification }: EventEntity) {
         return this.realm.write(() => {
             return this.realm.create('Event', {
                 _id: uuid.v4(),
                 date,
                 name,
                 frequency,
+                notification,
                 done: false,
                 created_at: new Date(),
                 updated_at: new Date()
@@ -52,7 +71,7 @@ export class EventRepository {
     }
 
     update ({
-        id, date, name, frequency, done, createdAt }: EventEntity) {
+        id, date, name, frequency,notification, done, createdAt }: EventEntity) {
         return this.realm.write(() => {
             return this.realm.create('Event', {
                 _id: id,
@@ -60,6 +79,7 @@ export class EventRepository {
                 name,
                 frequency,
                 done,
+                notification,
                 created_at: createdAt,
                 updated_at: new Date()
             },UpdateMode.Modified)

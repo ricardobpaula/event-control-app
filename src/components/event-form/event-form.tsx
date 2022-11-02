@@ -25,7 +25,9 @@ import { Input } from '../input/input'
 import { NumberSelector } from '../number-selector/number-selector'
 import { EventRepository } from '../../database/repositories/event-repository'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
+
 import { colors } from '../../styles/theme'
+import { removeSchedulePushNotification, schedulePushNotification } from '../../utils/notification'
 
 export interface EventFormHandles {
     openModal: (event?: EventEntity) => void
@@ -33,6 +35,11 @@ export interface EventFormHandles {
 
 type EventFormProps = ModalProps &  {
     onHandleSubmit: () => void
+    date: Date
+}
+
+type NotificationProps = {
+    name: string
     date: Date
 }
 
@@ -47,18 +54,34 @@ const EventForm:React.ForwardRefRenderFunction<EventFormHandles, EventFormProps>
     const [time, setTime] = useState<Date>(date)
 
     const handleSubmit = async () => {
-        if (!name.trim()) return Alert.alert('Nome do evento é obrigatório')        
+        if (!name.trim()) return Alert.alert('Nome do evento é obrigatório')
+        
+        if (time <= new Date()) return Alert.alert('Evento não pode ser agendado para uma data passada')
 
         const realm = await EventRepository.start()
 
-        const event = {
-            id,
-            date: time,
-            name,
-            frequency
-        } as EventEntity
-
         try {
+            if (id) {
+                const oldNotification = realm.getById(id).notification
+                await removeSchedulePushNotification(oldNotification)
+            }
+            const newDate = new Date(new Date().setSeconds(new Date().getSeconds() + 1))
+            const notification = await schedulePushNotification({
+                title: name,
+                body: `Seu evento: ${name}`,
+                date: newDate
+            })
+
+            console.log(notification)
+            
+            const event = {
+                id,
+                date: time,
+                name,
+                notification,
+                frequency
+            } as EventEntity
+
             event.id ? realm.update(event) : realm.create(event)
         } catch (error) {
             console.log(error)

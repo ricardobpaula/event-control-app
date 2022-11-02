@@ -8,6 +8,7 @@ export declare global {
         date: Date
         name: string
         done: booelan
+        notification: string
         frequency?: number
         createdAt?: Date
         updatedAt?: Date

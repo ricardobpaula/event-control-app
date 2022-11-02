@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native"
 import { Loading } from "../../components/loading/loading"
 import { EventRepository } from "../../database/repositories/event-repository"
 import { IconButton } from "../../components/icon-button/icon-button"
+import { parseToGMT3 } from "../../utils/date-util"
 
 type HomeScreenProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>
 
@@ -22,7 +23,7 @@ export const Home = () => {
     const navigation = useNavigation<HomeScreenProp>()
 
     const handleOpenDay = (timestamp:number) => {
-        navigation.navigate('EventList', {
+        navigation.navigate('EventList', { 
             timestamp: timestamp
         })
     }
@@ -34,7 +35,7 @@ export const Home = () => {
     
     const loadAllEvents = async () => {
         const realm = await EventRepository.start() 
-
+        
         try {
             const events = realm.findMany('done = $0', false)
             const dates = new Set(
